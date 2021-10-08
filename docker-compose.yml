@@ -10,4 +10,8 @@ services:
       - 3000:3000
     environment:
       - NODE_ENV=production
+      - PARSE_APPLICATION_ID=dDgpCbCGWqIojuPcym19Ov6vEkmBH8Nk90P3qovv
+      - PARSE_REST_API_KEY=
+      - PARSE_SERVER_MASTER_KEY=w859jfcyRiGCtt5WmFFSsSiQjL2kpcshhjdaNwTQ
+      - PARSE_URL=https://warm-earth-97740.herokuapp.com/parse/files/
     command: "npm start"

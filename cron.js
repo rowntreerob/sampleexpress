@@ -1,4 +1,5 @@
-var cron = require('cron');
+
+import cron from 'cron';
 
 var job1 = new cron.CronJob({
   cronTime: '*/2 * * * *',
