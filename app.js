@@ -111,6 +111,8 @@ app.post('/awsupl',  function(req, resp, next) {
      Key: 'test2.png'})
      .then(res2 => {
         resp.setHeader('Content-Type', 'application/json');
+        resp.setHeader('Access-Control-Allow-Methods', 'GET,POST,HEAD,PUT,DELETE,OPTIONS');
+        resp.setHeader('Access-Control-Allow-Origin', '*');
         resp.end(JSON.stringify(res2));
      })
    });
