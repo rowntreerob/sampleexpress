@@ -113,6 +113,8 @@ app.post('/awsupl',  function(req, resp, next) {
         resp.setHeader('Content-Type', 'application/json');
         resp.setHeader('Access-Control-Allow-Methods', 'GET,POST,HEAD,PUT,DELETE,OPTIONS');
         resp.setHeader('Access-Control-Allow-Origin', '*');
+        resp.setHeader('Access-Control-Allow-Headers','X-Parse-Application-Id,Content-Type');
+
         resp.end(JSON.stringify(res2));
      })
    });
