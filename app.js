@@ -3,6 +3,7 @@
  */
 import fetch from 'node-fetch';
 import express from 'express';
+import cors from 'cors';
 import { URL } from 'url';
 import { uploadFile } from 's3-bucket';
 import { nanoid } from 'nanoid';
@@ -11,10 +12,28 @@ import { getConf } from "./config.js";
 const env = process.env.NODE_ENV || 'development';
 let Config = getConf(env);
 // console.log(JSON.stringify(Config.api.parseheaders) + " ENV")
+var whitelist = [
+    'https://fiddle.jshell.net',
+    'https://apidflt.bubbleapps.io',
+    'http://apidflt.bubbleapps.io'
+];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+
+};
+
 var app = express()
 // const hostWithProtocol = req.protocol + '://' + req.get('host')
 const __dirname = new URL('.', import.meta.url).pathname;
 app.use(express.static(__dirname + '/public'));
+app.use(cors({corsOptions}));
+
 app.set('view engine', 'jade');
 app.get('/', function (req, res) {
   res.render('index', {});
@@ -94,6 +113,8 @@ app.post('/upload',  function(req, resp, next) {
   });
 })
 
+
+app.options('/awsupl', cors());
 // for POST binary to AWS S3 using npm.s3-bucket
 // same protocol as 'upload' with exception for bucket's
 // using fs and NOT USING node.STREAMS
@@ -101,7 +122,7 @@ app.post('/upload',  function(req, resp, next) {
 // tmpfile from step #1
 // binary file in req.body is proxied to S3 Bucket specified
 // in the list of env vars used for s3-bucket - see docs in npm
-app.post('/awsupl',  function(req, resp, next) {
+app.post('/awsupl', cors(), function(req, resp, next) {
   console.log("RTE awsupl post ");
   let _path = '/tmp/' + nanoid();
   req.pipe(fs.createWriteStream(_path))
@@ -110,10 +131,8 @@ app.post('/awsupl',  function(req, resp, next) {
      filePath: _path,
      Key: 'test2.png'})
      .then(res2 => {
-        resp.set({'Content-Type': 'application/json'
-        ,'Access-Control-Allow-Methods': 'GET,POST,HEAD,PUT,DELETE,OPTIONS'
-        ,'Access-Control-Allow-Origin': '*'
-        ,'Access-Control-Allow-Headers':'X-Parse-Application-Id,Content-Type'});
+       console.log('response passthru aws ' ,JSON.stringify(res2));
+        resp.set({'Content-Type': 'application/json'});
         resp.end(JSON.stringify(res2));
      })
    });
