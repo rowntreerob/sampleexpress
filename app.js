@@ -14,9 +14,11 @@ let Config = getConf(env);
 // console.log(JSON.stringify(Config.api.parseheaders) + " ENV")
 var whitelist = [
     'https://fiddle.jshell.net',
+    'https://jsfiddle.net',
     'https://apidflt.bubbleapps.io',
     'http://apidflt.bubbleapps.io'
 ];
+/*
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -25,15 +27,14 @@ var corsOptions = {
       callback(new Error('Not allowed by CORS'))
     }
   }
-
 };
-
+*/
 var app = express()
 // const hostWithProtocol = req.protocol + '://' + req.get('host')
 const __dirname = new URL('.', import.meta.url).pathname;
 app.use(express.static(__dirname + '/public'));
-app.use(cors({corsOptions}));
-
+//app.use(cors({corsOptions}));
+app.use(cors())
 app.set('view engine', 'jade');
 app.get('/', function (req, res) {
   res.render('index', {});
