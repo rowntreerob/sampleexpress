@@ -5,14 +5,7 @@ let apidev = {
   parseheaders: {
     'X-Parse-Application-Id':  process.env.PARSE_APPLICATION_ID ,
     'X-Parse-REST-API-Key':  process.env.PARSE_REST_API_KEY ,
-    'Content-Type': 'image/jpeg',
-    'Access-Control-Allow-Headers':
-    'X-Parse-Master-Key,X-Parse-REST-API-Key'
-    +',X-Parse-Javascript-Key,X-Parse-Application-Id'
-    +',X-Parse-Client-Version,X-Parse-Session-Token'
-    +',Content-Type',
-    'Access-Control-Allow-Methods': 'GET,POST,HEAD,PUT,DELETE,OPTIONS',
-    'Access-Control-Allow-Origin': '*'
+    'Content-Type': 'image/jpeg'    
     },
   twtrhdrs:{"Authorization":
   'Bearer '}
