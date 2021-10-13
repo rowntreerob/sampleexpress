@@ -24,6 +24,8 @@ Full stdout log from curl client moving file from AWS to Parse-Server on [pastBi
  **Server dtls - pipe the file to AWS API to proj. bucket-name**
  ![express server API](./public/pics/npm_s3-bucket.png)
  Client code JS function runs binary file upload and the handler on server uses **node streams** to pipe the file on to AWS API upload(file).
+
+
 Intended for devs with some node.express and some npm and some git background.
 
 ## Download, Install ##
@@ -37,6 +39,13 @@ node app
 
 use curl client , use Postman for client
 remember to urlencode  each of the 2 url parms located in the full url's path.
+
+## Config AWS S3, api specified Security (headers) ##
+npm module **s3-bucket** connects to that service and needs values in following (env vars set on server):
+![bubble ui](./public/pics/s3-bucket_var.png)
+in dev, per heroku implementation, manual edit on file=.env and then run on localhost w **heroku local** in term.
+
+Use dashboard ( scalingo OR heroku ) for set Prod env var values. 
 
 # Sample Application with Node.js and Express Framework
 
