@@ -22,7 +22,7 @@ Full stdout log from curl client moving file from AWS to Parse-Server on [pastBi
  **Client dtls - native html w JS -> fetch.Post()**
  ![bubble ui](./public/pics/bubbl_exprs_clnt_1.png)
  **Server - input = file. Send file via S3 API**
- Call API - S3.upload(file) push the file to the config'd bucket, sending response below. 
+ Call API - S3.upload(file) push the file to the config'd bucket, sending response below.
  ![express server API](./public/pics/npm_s3-bucket.png)
  Client code JS function runs binary file upload and the handler on server uses **node streams** to pipe the file on to AWS API upload(file).
 
@@ -35,7 +35,8 @@ using std. git.clone and node.npm.install
 ## dev run   localhost:3000 ##
 ```
 cd $PROJECT_ROOT
-node app
+node app    or  if .env used then run using belo
+heroku local       // this pulls in .env values on localhost
 ```
 
 use curl client , use Postman for client
