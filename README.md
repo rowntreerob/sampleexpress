@@ -21,7 +21,8 @@ Full stdout log from curl client moving file from AWS to Parse-Server on [pastBi
 
  **Client dtls - native html w JS -> fetch.Post()**
  ![bubble ui](./public/pics/bubbl_exprs_clnt_1.png)
- **Server dtls - pipe the file to AWS API to proj. bucket-name**
+ **Server - input = file. Send file via S3 API**
+ Call API - S3.upload(file) push the file to the config'd bucket, sending response below. 
  ![express server API](./public/pics/npm_s3-bucket.png)
  Client code JS function runs binary file upload and the handler on server uses **node streams** to pipe the file on to AWS API upload(file).
 
@@ -45,7 +46,7 @@ npm module **s3-bucket** connects to that service and needs values in following 
 ![bubble ui](./public/pics/s3-bucket_var.png)
 in dev, per heroku implementation, manual edit on file=.env and then run on localhost w **heroku local** in term.
 
-Use dashboard ( scalingo OR heroku ) for set Prod env var values. 
+Use dashboard ( scalingo OR heroku ) for set Prod env var values.
 
 # Sample Application with Node.js and Express Framework
 
