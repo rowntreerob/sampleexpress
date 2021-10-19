@@ -112,7 +112,7 @@ app.post('/awsupl', cors(), function(req, resp, next) {
   .on('close', function() {
     uploadFile({
      filePath: _path,
-     Key: 'test2.png'})
+     Key: 'bubbtst/photo.png'})
      .then(res2 => {
        console.log('response aws ' ,JSON.stringify(res2));
         resp.set({'Content-Type': 'application/json'});
