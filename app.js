@@ -121,6 +121,31 @@ app.post('/awsupl', cors(), function(req, resp, next) {
    });
 })
 
+// handle browser pre-fetch that preceed the post calls below
+app.options('/awsupl', cors());
+// for POST binary to AWS S3 using npm.s3-bucket
+// same protocol as 'upload' with exception for bucket's
+// using fs and NOT USING node.STREAMS
+// so file output to /tmp and then POST #2 does io on the
+// tmpfile from step #1
+// binary file in req.body is proxied to S3 Bucket specified
+// in the list of env vars used for s3-bucket - see docs in npm
+app.post('/awsvid', cors(), function(req, resp, next) {
+  // console.log("RTE awsupl post ");
+  let _path = '/tmp/' + nanoid();
+  req.pipe(fs.createWriteStream(_path))
+  .on('close', function() {
+    uploadFile({
+     filePath: _path,
+     Key: 'video/clip.mp4'})
+     .then(res2 => {
+       console.log('response aws ' ,JSON.stringify(res2));
+        resp.set({'Content-Type': 'application/json'});
+        resp.end(JSON.stringify(res2));
+     })
+   });
+})
+
 var server = app.listen(process.env.PORT || 3000, function () {
   var host = server.address().address
   var port = server.address().port
