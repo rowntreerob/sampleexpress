@@ -1,6 +1,6 @@
 ## Bubble utility - binary file mover ( node express server )
 #### send binary files from / to
-- running your own server (PAAS), is getting more feasible for some no-code projects. Heroku / Scalingo / github promote lo-complexity solution, adding a server process. This process may be a better alternative to Plugin solutions that may, in cases involving private AWS buckets, expose very [complex configuration](https://docs.zeroqode.com/plugins/aws-file-uploader-plugin) issues. 
+- running your own server (PAAS), is getting more feasible for some no-code projects. Heroku / Scalingo / github promote lo-complexity solution, adding a server process. This process may be a better alternative to Plugin solutions that may, in cases involving private AWS buckets, expose very [complex configuration](https://docs.zeroqode.com/plugins/aws-file-uploader-plugin) issues.
 - move around binary files, with Endpoints or with API Connector using 2, encoded Urls  (from , to) as parameters. For, example to move/copy a jpeg from AWS S3 platform to another, 3rd party fileSys as a service, the Url for the Endpoint/ connector would be :
 
 ```
@@ -28,20 +28,20 @@ Full stdout log from curl client moving file from AWS to Parse-Server on [pastBi
  Client code JS function runs binary file upload and the handler on server uses **node streams** to pipe the file on to AWS API upload(file).
 
 **Image Upload to AWS**
-```
-[Sample client side code](https://jsfiddle.net/rowntreerob/c94f5t3k/99/)
-[Server code route](https://github.com/rowntreerob/sampleexpress/blob/master/app.js#L108)  is **/awsupl**
-Client side code specifies mime type **photo/png**
-Server logs show the json response as client would get it.
+
+[Sample client side code](https://jsfiddle.net/rowntreerob/c94f5t3k/99/)  
+[Server code route](https://github.com/rowntreerob/sampleexpress/blob/master/app.js#L108)  is **/awsupl**  
+Client side code specifies mime type **photo/png**  
+Server logs show the json response as client would get it.  
 ![logs](./public/pics/serv_log.png)
-```
+
 **Video Upload to AWS**
-```
-![Sample client side code](./public/pics/vid_upl_aws.png)
-[Server code route](https://github.com/rowntreerob/sampleexpress/blob/master/app.js#L130) is **/awsvid**
-Client side code specifies mime type **video/mp4**
+
+![Sample client side code](./public/pics/vid_upl_aws.png)  
+[Server code route](https://github.com/rowntreerob/sampleexpress/blob/master/app.js#L130) is **/awsvid**  
+Client side code specifies mime type **video/mp4**  
 photo above (jsfiddle code ) shows json response in lower right hand side with the console output.
-```
+  
 Listing of AWS bucket following 12 Meg video upload below-
 
 ![aws bucket](./public/pics/aws-bucket-content-video.png)
