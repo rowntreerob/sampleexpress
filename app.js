@@ -4,12 +4,22 @@
 import fetch from 'node-fetch';
 import express from 'express';
 import cors from 'cors';
+import util from 'util';
 import { URL } from 'url';
 import { uploadFile } from 's3-bucket';
+
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { s3Client } from "./libs/s3Client.js";
+// Helper function that creates Amazon S3 service client module.
+
 import { nanoid } from 'nanoid';
 import fs from 'fs';
 import { getConf } from "./config.js";
 const env = process.env.NODE_ENV || 'development';
+const region = process.env.AWS_REGION || 'us-east-1';
+const bucket = process.env.S3_BUCKET_NAME || 'yayatv-dev';
+
+
 let Config = getConf(env);
 // console.log(JSON.stringify(Config.api.parseheaders) + " ENV")
 var app = express()
@@ -19,6 +29,7 @@ app.use(express.static(__dirname + '/public'));
 //app.use(cors({corsOptions}));
 app.use(cors())
 app.set('view engine', 'jade');
+
 app.get('/', function (req, res) {
   res.render('index', {});
 })
@@ -141,6 +152,31 @@ app.post('/awsvid', cors(), function(req, resp, next) {
         resp.end(JSON.stringify(res2));
      })
    });
+})
+
+app.options('/awsaud', cors());
+// for POST binary to AWS S3 of raw PCM
+// Wav mimetpe after addition Wav headers to the blob in post.body
+// resultant wav file created in s3-bucket config'd for audio
+// get buffer for body , add header , get blob and post to s3
+app.post('/awsaud', cors(), async function(req, resp, next) {
+  // no header body is raw PCM audio -> stream direct to aws create
+  let stream = req.body;
+  let data, json;
+  const params = {
+    Bucket:  bucket,
+    Key: 'audio/clip.pcm',
+    ContentType: 'audio/pcm',
+    Body: stream
+  };
+  try {
+    data = await s3Client.send(new PutObjectCommand(params));
+    //console.log(util.inspect(data, false, null, true /* enable colors */))
+    resp.set({'Content-Type': 'application/json'});
+    resp.end(JSON.stringify(data));
+  } catch (error) {
+    return resp.status(400).json({ error: error.toString() });
+  }
 })
 
 var server = app.listen(process.env.PORT || 3000, function () {
