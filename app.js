@@ -175,7 +175,8 @@ app.post('/awsaud', cors(), async function(req, resp, next) {
     resp.set({'Content-Type': 'application/json'});
     resp.end(JSON.stringify(data));
   } catch (error) {
-    return resp.status(400).json({ error: error.toString() });
+    next(error);
+    //return resp.status(400).json({ error: error.toString() });
   }
 })
 
