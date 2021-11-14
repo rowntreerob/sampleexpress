@@ -26,8 +26,11 @@ var app = express()
 // const hostWithProtocol = req.protocol + '://' + req.get('host')
 const __dirname = new URL('.', import.meta.url).pathname;
 app.use(express.static(__dirname + '/public'));
-//app.use(cors({corsOptions}));
-app.use(cors())
+var corsOptions = {
+  origin: '*'
+}
+app.use(cors({corsOptions}));
+//app.use(cors());
 app.set('view engine', 'jade');
 
 app.get('/', function (req, res) {
