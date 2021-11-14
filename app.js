@@ -3,7 +3,7 @@
  */
 import fetch from 'node-fetch';
 import express from 'express';
-import cors from 'cors';
+ import cors from 'cors';
 import util from 'util';
 import { URL } from 'url';
 import { uploadFile } from 's3-bucket';
@@ -26,10 +26,7 @@ var app = express()
 // const hostWithProtocol = req.protocol + '://' + req.get('host')
 const __dirname = new URL('.', import.meta.url).pathname;
 app.use(express.static(__dirname + '/public'));
-var corsOptions = {
-  origin: '*'
-}
-app.use(cors({corsOptions}));
+app.use(cors({ origin: '*' }));
 //app.use(cors());
 app.set('view engine', 'jade');
 
@@ -157,12 +154,13 @@ app.post('/awsvid', cors(), function(req, resp, next) {
    });
 })
 
-app.options('/awsaud', cors());
+// app.options('/awsaud', cors());
 // for POST binary to AWS S3 of raw PCM
 // Wav mimetpe after addition Wav headers to the blob in post.body
 // resultant wav file created in s3-bucket config'd for audio
 // get buffer for body , add header , get blob and post to s3
-app.post('/awsaud', cors(), async function(req, resp, next) {
+// app.post('/awsaud', cors(), async function(req, resp, next) {
+app.post('/awsaud', async function(req, resp, next) {
   // no header body is raw PCM audio -> stream direct to aws create
   let stream = req.body;
   let data, json;
@@ -172,9 +170,17 @@ app.post('/awsaud', cors(), async function(req, resp, next) {
     ContentType: 'audio/pcm',
     Body: stream
   };
+
+
+  var hdrs = {
+    'Access-Control-Allow-Methods': 'GET,POST,HEAD,PUT,DELETE,OPTIONS',
+    'Access-Control-Allow-Origin': '*'}
+
   try {
     data = await s3Client.send(new PutObjectCommand(params));
-    //console.log(util.inspect(data, false, null, true /* enable colors */))
+    //console.log(util.inspect(data, false, null, true /* enable colors */)
+    resp.set(hdrs);
+
     resp.set({'Content-Type': 'application/json'});
     resp.end(JSON.stringify(data));
   } catch (error) {
