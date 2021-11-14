@@ -154,13 +154,31 @@ app.post('/awsvid', cors(), function(req, resp, next) {
    });
 })
 
+app.options('/awsaud', cors());
+app.post('/awsaud', cors(), function(req, resp, next) {
+  // console.log("RTE awsupl post ");
+  let _path = '/tmp/' + nanoid();
+  req.pipe(fs.createWriteStream(_path))
+  .on('close', function() {
+    uploadFile({
+     filePath: _path,
+     Key: 'audio/clip.pcm'})
+     .then(res2 => {
+       console.log('response aws ' ,JSON.stringify(res2));
+        resp.set({'Content-Type': 'application/json'});
+        resp.end(JSON.stringify(res2));
+     })
+   });
+})
+
+
 // app.options('/awsaud', cors());
 // for POST binary to AWS S3 of raw PCM
 // Wav mimetpe after addition Wav headers to the blob in post.body
 // resultant wav file created in s3-bucket config'd for audio
 // get buffer for body , add header , get blob and post to s3
 // app.post('/awsaud', cors(), async function(req, resp, next) {
-app.post('/awsaud', async function(req, resp, next) {
+app.post('/awsaudNG', async function(req, resp, next) {
   // no header body is raw PCM audio -> stream direct to aws create
   let stream = req.body;
   let data, json;
