@@ -9,6 +9,9 @@ import { URL } from 'url';
 import { uploadFile } from 's3-bucket';
 
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+
+
+import { Upload } from "@aws-sdk/lib-storage";
 import { s3Client } from "./libs/s3Client.js";
 // Helper function that creates Amazon S3 service client module.
 
@@ -171,6 +174,32 @@ app.post('/awsaud', cors(), function(req, resp, next) {
    });
 })
 
+app.post('/awsupl2', async function(req, resp, next) {
+  // no header body is photo/png -> stream direct to aws create
+  let stream = req;
+  let data, json;
+  const params = {
+    Bucket:  bucket,
+    Key: 'bubbtst/photo.png',
+    ContentType: 'image/png',
+    Body: stream
+  };
+
+  try {
+    const s3Upload = new Upload({
+    client: s3Client,
+    params: params,
+  });
+
+console.log("Upload file to:", `s3://${params.Bucket}/${params.Key}`);
+    data = await s3Upload.done();
+    resp.set({'Content-Type': 'application/json'});
+    resp.end(JSON.stringify(data));
+  } catch (error) {
+    next(error);
+    //return resp.status(400).json({ error: error.toString() });
+  }
+})
 
 // app.options('/awsaud', cors());
 // for POST binary to AWS S3 of raw PCM
