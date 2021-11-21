@@ -3,14 +3,11 @@
  */
 import fetch from 'node-fetch';
 import express from 'express';
- import cors from 'cors';
+import cors from 'cors';
 import util from 'util';
 import { URL } from 'url';
 import { uploadFile } from 's3-bucket';
-
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-
-
 import { Upload } from "@aws-sdk/lib-storage";
 import { s3Client } from "./libs/s3Client.js";
 // Helper function that creates Amazon S3 service client module.
@@ -173,28 +170,32 @@ app.post('/awsaud', cors(), function(req, resp, next) {
      })
    });
 })
-
-app.post('/awsupl2', async function(req, resp, next) {
-  // no header body is photo/png -> stream direct to aws create
+// client /awsupl2/files/${file.name}'
+//  ContentType: contentType, of name
+app.post('/awsupl2/files/:name', async function(req, resp, next) {
+  //  req.body is photo/png -> params.Body for aws file upload
+  let fname = ""; // to aws meta-info
+  if (req.params.name) fname = decodeURI(req.params.name);
+  let _path = 'files/' + nanoid() +'/' +fname;
   let stream = req;
-  let data, json;
+  let data;
+  let data2 = [];
   const params = {
     Bucket:  bucket,
-    Key: 'bubbtst/photo.png',
+    Key: _path,
     ContentType: 'image/png',
-    Body: stream
+    Body: stream,
+    Metadata: { filename: fname, path: _path }
   };
-
   try {
-    const s3Upload = new Upload({
-    client: s3Client,
-    params: params,
-  });
-
-console.log("Upload file to:", `s3://${params.Bucket}/${params.Key}`);
+    const s3Upload = new Upload({ client: s3Client, params: params });
+    console.log("Upload file to:",
+      `s3://${params.Bucket}/${params.Key}`);
     data = await s3Upload.done();
+    data2.push(data);
+    data2.push(params.Metadata);
     resp.set({'Content-Type': 'application/json'});
-    resp.end(JSON.stringify(data));
+    resp.end(JSON.stringify({ calls: data2 })); //json
   } catch (error) {
     next(error);
     //return resp.status(400).json({ error: error.toString() });
