@@ -170,7 +170,11 @@ app.post('/awsaud', cors(), function(req, resp, next) {
      })
    });
 })
+// http post request that has a binary file in the req.body
+//  upload file to S3 bucket re:  env var -S3_BUCKET_NAME
 // client /awsupl2/files/${file.name}'
+// curl POST --data-binary '@redpill_partnr2.png'
+//   http://localhost:3000/awsupl2/files/redpill_partnr2.png
 //  ContentType: contentType, of name
 app.post('/awsupl2/files/:name', async function(req, resp, next) {
   //  req.body is photo/png -> params.Body for aws file upload
@@ -185,7 +189,8 @@ app.post('/awsupl2/files/:name', async function(req, resp, next) {
     Key: _path,
     ContentType: 'image/png',
     Body: stream,
-    Metadata: { filename: fname, path: _path }
+    Metadata: { filename: fname, path: _path },
+    ACL: 'public-read'
   };
   try {
     const s3Upload = new Upload({ client: s3Client, params: params });
